@@ -168,7 +168,7 @@ int main ( int argc, char **argv )
 	cout << "cameraid: " << cam_id << endl;
 	cout << "procedure: " << procedure << endl;
 
-    VideoCapture capture("/dev/video"+std::to_string(cam_id));
+    VideoCapture capture(cam_id);
 
 	//Mat image = imread(argv[1]);
 	Mat image;
@@ -196,7 +196,7 @@ int main ( int argc, char **argv )
 		cvtColor(image,gray,CV_RGB2GRAY);
 
         printQrCode(gray);
-		key = waitKey(1000);
+		key = waitKey(1);
 
 	}	// End of 'while' loop
 
