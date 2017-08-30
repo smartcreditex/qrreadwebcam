@@ -62,6 +62,36 @@ void postTransaction(std::string from, std::string to){
 
 }
 
+void doArrived(){
+	std::string url = hostname + "/arrived";
+	
+	Poco::URI uri(url);
+    Poco::Net::HTTPClientSession session(uri.getHost(), uri.getPort());
+    Poco::Net::HTTPRequest req(Poco::Net::HTTPRequest::HTTP_GET,
+                               uri.getPathAndQuery());
+    session.sendRequest(req);
+    Poco::Net::HTTPResponse res;
+	std::istream &iStr = session.receiveResponse(res);
+	std::string outStr;
+	Poco::StreamCopier::copyToString(iStr, outStr);
+	std::cout << outStr << std::endl;
+}
+
+void doDelivered(){
+	std::string url = hostname + "/delivered";
+	
+	Poco::URI uri(url);
+    Poco::Net::HTTPClientSession session(uri.getHost(), uri.getPort());
+    Poco::Net::HTTPRequest req(Poco::Net::HTTPRequest::HTTP_GET,
+                               uri.getPathAndQuery());
+    session.sendRequest(req);
+    Poco::Net::HTTPResponse res;
+	std::istream &iStr = session.receiveResponse(res);
+	std::string outStr;
+	Poco::StreamCopier::copyToString(iStr, outStr);
+	std::cout << outStr << std::endl;
+}
+
 void postCount(){
 	std::string url = hostname + "/count";
 	
@@ -95,10 +125,10 @@ void parseData(std::string data){
 		}
 	}break;
 	case 1:{
-		postCount();
+		doArrived();
 	}break;
 	case 2:
-		postCount();
+		doDelivered();
 	break;
 	default:
 	break;
