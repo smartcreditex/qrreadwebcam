@@ -3,9 +3,11 @@
 // Author  : Bharath Prabhuswamy
 //______________________________________________________________________________________
 
-#include <opencv2/opencv.hpp>
 #include <iostream>
 #include <cmath>
+#include <string>
+
+#include <opencv2/opencv.hpp>
 #include <zbar.h>
 #include <Poco/URI.h>
 #include <Poco/Net/DNS.h>
@@ -16,6 +18,15 @@
 
 using namespace cv;
 using namespace std;
+
+std::string hostname = "http://localhost:41337";
+int cam_id = 0;
+/*
+* 0 testing
+* 1 
+* 2 deliver
+*/
+int procedure = 0;
 
 const int CV_QR_NORTH = 0;
 const int CV_QR_EAST = 1;
@@ -36,7 +47,7 @@ void postTransaction(std::string from, std::string to){
 
 
 	//cout << from << " " << to << endl;
-	std::string url = "http://localhost:1337/transaction/"+from+"/"+to;
+	std::string url = hostname + "/transaction/"+from+"/"+to;
 	
 	Poco::URI uri(url);
     Poco::Net::HTTPClientSession session(uri.getHost(), uri.getPort());
@@ -51,6 +62,50 @@ void postTransaction(std::string from, std::string to){
 
 }
 
+void postCount(){
+	std::string url = hostname + "/count";
+	
+	Poco::URI uri(url);
+    Poco::Net::HTTPClientSession session(uri.getHost(), uri.getPort());
+    Poco::Net::HTTPRequest req(Poco::Net::HTTPRequest::HTTP_GET,
+                               uri.getPathAndQuery());
+    session.sendRequest(req);
+    Poco::Net::HTTPResponse res;
+	std::istream &iStr = session.receiveResponse(res);
+	std::string outStr;
+	Poco::StreamCopier::copyToString(iStr, outStr);
+	std::cout << outStr << std::endl;
+}
+
+void parseData(std::string data){
+	std::cout << data << std::endl;
+	
+	switch(procedure){
+	case 0:{
+		stringstream ss(data);
+		vector<string> tokens; // Create vector to hold our words
+		string buf;
+		while (ss >> buf)
+			tokens.push_back(buf);
+
+		if(tokens.size() >= 2){
+			std::string from = tokens[0];
+			std::string to = tokens[1];
+			postTransaction(from, to);
+		}
+	}break;
+	case 1:{
+		postCount();
+	}break;
+	case 2:
+		postCount();
+	break;
+	default:
+	break;
+	};
+}
+			
+
 // source: http://blog.ayoungprogrammer.com/2013/07/tutorial-scanning-barcodes-qr-codes.html/
 void printQrCode(cv::Mat image){
 	zbar::ImageScanner scanner;
@@ -63,20 +118,9 @@ void printQrCode(cv::Mat image){
 	++symbol) {  
 			   vector<Point> vp;  
 	// do something useful with results  
-	std::string data = symbol->get_data();
-		std::cout << data << std::endl;
-		stringstream ss(data);
-		vector<string> tokens; // Create vector to hold our words
-		
-		string buf;
-		while (ss >> buf)
-			tokens.push_back(buf);
-
-		if(tokens.size() >= 2){
-			std::string from = tokens[0];
-			std::string to = tokens[1];
-			postTransaction(from, to);
-		}
+		std::string data = symbol->get_data();
+	
+		parseData(data);
 	}
 }
 
@@ -85,7 +129,24 @@ void printQrCode(cv::Mat image){
 int main ( int argc, char **argv )
 {
 
-	VideoCapture capture(0);
+	if(argc > 1){
+		hostname = std::string(argv[1]);
+		if(argc > 2){
+			cam_id = std::stoi(argv[2]);
+			if(argc > 3){
+				procedure = std::stoi(argv[3]);
+			}
+		}
+
+	} else {
+		cout << "usage: program hostname cameraid procedureid\n eg: ./program http://localhost:41337 0 0" << endl;
+	}
+
+	cout << "hostname: " << hostname << endl;
+	cout << "cameraid: " << cam_id << endl;
+	cout << "procedure: " << procedure << endl;
+
+	VideoCapture capture(cam_id);
 
 	//Mat image = imread(argv[1]);
 	Mat image;
@@ -367,14 +428,14 @@ int main ( int argc, char **argv )
 
 			}
 		}
-	
-		imshow ( "Image", image );
-		imshow ( "Traces", traces );
-		imshow ( "QR code", qr_thres );
+
+		if(procedure == 0){
+			imshow ( "Image", image );
+			imshow ( "Traces", traces );
+			imshow ( "QR code", qr_thres );
+		}
 
 		printQrCode(qr_thres);
-
-
 
 		key = waitKey(1);	// OPENCV: wait for 1ms before accessing next frame
 
