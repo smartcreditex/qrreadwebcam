@@ -22,7 +22,9 @@
 
 #ifdef WITH_GROVEPI
 #include <grovepi.h>
+#include <grove_rgb_lcd.h>
 using namespace GrovePi;
+LCD lcd;
 #endif
 
 using namespace cv;
@@ -36,6 +38,8 @@ int cam_id = 0;
 * 2 deliver
 */
 int procedure = 0;
+
+std::string stdLcdText = "Smart Credit";
 
 VideoCapture capture[2];
 Mat image[2];
@@ -57,6 +61,7 @@ void makeSound(){
 
 void signalArrived(){
 	#ifdef WITH_GROVEPI
+	lcd.setRGB(0, 0, 255);
 	digitalWrite(green_led_pin, HIGH);
 	delay(500);
 	digitalWrite(green_led_pin, LOW);
@@ -68,11 +73,13 @@ void signalArrived(){
 	digitalWrite(green_led_pin, HIGH);
 	delay(500);
 	digitalWrite(green_led_pin, LOW);
+	lcd.setRGB(0, 128, 64);
 	#endif
 }
 
 void signalDelivered(){
 	#ifdef WITH_GROVEPI
+	lcd.setRGB(255, 0, 0);
 	digitalWrite(red_led_pin, HIGH);
 	delay(500);
 	digitalWrite(red_led_pin, LOW);
@@ -84,6 +91,7 @@ void signalDelivered(){
 	digitalWrite(red_led_pin, HIGH);
 	delay(500);
 	digitalWrite(red_led_pin, LOW);
+	lcd.setRGB(0, 128, 64);
 	#endif
 }
 
@@ -229,6 +237,9 @@ int main ( int argc, char **argv )
 	#ifdef WITH_GROVEPI
 	initGrovePi(); // initialize communication with the GrovePi
 	pinMode(buzzer_pin, OUTPUT);
+	lcd.connect();
+	lcd.setText(stdLcdText);
+	lcd.setRGB(0, 128, 64);
 	#endif
 
 	if(procedure == 1){
