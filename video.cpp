@@ -37,6 +37,9 @@ int cam_id = 0;
 */
 int procedure = 0;
 
+VideoCapture capture[2];
+Mat image[2];
+
 #ifdef WITH_GROVEPI
 int buzzer_pin = 8;
 int green_led_pin = 2;
@@ -156,10 +159,10 @@ void parseData(std::string data, int cam){
 	makeSound();
 	
 	switch(cam){
-	case 1:{
+	case 0:{
 		doArrived();
 	}break;
-	case 2:
+	case 1:
 		doDelivered();
 	break;
 	default:
@@ -183,6 +186,21 @@ void printQrCode(cv::Mat image, int cam){
 		std::string data = symbol->get_data();
 		std::cout << data << std::endl;
 		parseData(data, cam);
+	}
+}
+
+void doCapture(int cam){
+	while(true){
+		capture[cam] >> image[cam];
+		std::this_thread::sleep_for(std::chrono::milliseconds(10));
+	}
+}
+
+void doScanCode(int cam){
+	while(true){
+		cv::Mat gray;
+		cvtColor(image[cam], gray, CV_RGB2GRAY);
+		printQrCode(gray, cam);
 	}
 }
 
@@ -213,58 +231,28 @@ int main ( int argc, char **argv )
 	pinMode(buzzer_pin, OUTPUT);
 	#endif
 
-	VideoCapture capture1(cam_id);
-	VideoCapture capture2;
-	if(procedure == 0)
-		capture2.open(1);
-
-	Mat image;
-	Mat image2;
-
-	if(!capture1.isOpened()) { cerr << " ERR: Unable find input Video source." << endl;
-		return -1;
+	if(procedure == 1){
+		capture[0].open(0);
+	}else if(procedure == 2){
+		capture[1].open(1);
+	}else{
+		capture[0].open(0);
+		capture[1].open(1);
 	}
 
-	//Step	: Capture a frame from Image Input for creating and initializing manipulation variables
-	//Info	: Inbuilt functions from OpenCV
-	//Note	: 
-	
- 	capture1 >> image;
-	if(image.empty()){ cerr << "ERR: Unable to query image from capture device.\n" << endl;
-		return -1;
-	}
-	
-	int key = 0;
-	while(key != 'q')				// While loop to query for Image Input frame
-	{	
-		
-		capture1 >> image;
-		capture1 >> image;
-		capture1 >> image;
-		capture1 >> image;
-		capture1 >> image;
+	if(!capture[0].isOpened() && !capture[1].isOpened()) { cerr << " ERR: Unable find input Video source." << endl;
+	    return -1;
+    }
 
-		if(procedure == 0){
-			capture2 >> image2;
-			capture2 >> image2;
-			capture2 >> image2;
-			capture2 >> image2;
-			capture2 >> image2;
-		}
+	std::thread t1(doCapture,0);
+	std::thread t2(doCapture,1);
+	std::thread t3(doScanCode,0);
+	std::thread t4(doScanCode,1);
 
-		cv::Mat gray;
-		cv::Mat gray2;
-
-		cvtColor(image,gray,CV_RGB2GRAY);
-		printQrCode(gray, 1);
-		
-		if(procedure == 0){
-			cvtColor(image,gray,CV_RGB2GRAY);
-			printQrCode(gray, 2);
-		}
-		key = waitKey(1);
-
-	}	// End of 'while' loop
+	t1.join(); 
+	t2.join();
+	t3.join(); 
+	t4.join();
 
 	return 0;
 }
