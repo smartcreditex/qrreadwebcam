@@ -31,8 +31,8 @@ using namespace std;
 std::string hostname = "http://localhost:41337";
 int cam_id = 0;
 /*
-* 0 testing
-* 1 
+* 0 both
+* 1 arrive
 * 2 deliver
 */
 int procedure = 0;
@@ -151,24 +151,11 @@ void postCount(){
 	std::cout << outStr << std::endl;
 }
 
-void parseData(std::string data){
+void parseData(std::string data, int cam){
 
 	makeSound();
 	
-	switch(procedure){
-	case 0:{
-		stringstream ss(data);
-		vector<string> tokens; // Create vector to hold our words
-		string buf;
-		while (ss >> buf)
-			tokens.push_back(buf);
-
-		if(tokens.size() >= 2){
-			std::string from = tokens[0];
-			std::string to = tokens[1];
-			postTransaction(from, to);
-		}
-	}break;
+	switch(cam){
 	case 1:{
 		doArrived();
 	}break;
@@ -179,12 +166,12 @@ void parseData(std::string data){
 	break;
 	};
 
-	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+	std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 }
 			
 
 // source: http://blog.ayoungprogrammer.com/2013/07/tutorial-scanning-barcodes-qr-codes.html/
-void printQrCode(cv::Mat image){
+void printQrCode(cv::Mat image, int cam){
 	zbar::ImageScanner scanner;
 	scanner.set_config(zbar::ZBAR_NONE, zbar::ZBAR_CFG_ENABLE, 1);
 
@@ -192,12 +179,10 @@ void printQrCode(cv::Mat image){
 	int n = scanner.scan(img);
 	for(zbar::Image::SymbolIterator symbol = img.symbol_begin();  
 	symbol != img.symbol_end();  
-	++symbol) {  
-			   vector<Point> vp;  
-	// do something useful with results  
+	++symbol) { 
 		std::string data = symbol->get_data();
 		std::cout << data << std::endl;
-		parseData(data);
+		parseData(data, cam);
 	}
 }
 
@@ -228,11 +213,15 @@ int main ( int argc, char **argv )
 	pinMode(buzzer_pin, OUTPUT);
 	#endif
 
-	VideoCapture capture(cam_id);
+	VideoCapture capture1(cam_id);
+	VideoCapture capture2;
+	if(procedure == 0)
+		capture2.open(1);
 
 	Mat image;
+	Mat image2;
 
-	if(!capture.isOpened()) { cerr << " ERR: Unable find input Video source." << endl;
+	if(!capture1.isOpened()) { cerr << " ERR: Unable find input Video source." << endl;
 		return -1;
 	}
 
@@ -240,7 +229,7 @@ int main ( int argc, char **argv )
 	//Info	: Inbuilt functions from OpenCV
 	//Note	: 
 	
- 	capture >> image;
+ 	capture1 >> image;
 	if(image.empty()){ cerr << "ERR: Unable to query image from capture device.\n" << endl;
 		return -1;
 	}
@@ -249,16 +238,30 @@ int main ( int argc, char **argv )
 	while(key != 'q')				// While loop to query for Image Input frame
 	{	
 		
-		capture >> image;
-		capture >> image;
-		capture >> image;
-		capture >> image;
-		capture >> image;
+		capture1 >> image;
+		capture1 >> image;
+		capture1 >> image;
+		capture1 >> image;
+		capture1 >> image;
+
+		if(procedure == 0){
+			capture2 >> image2;
+			capture2 >> image2;
+			capture2 >> image2;
+			capture2 >> image2;
+			capture2 >> image2;
+		}
+
 		cv::Mat gray;
+		cv::Mat gray2;
 
 		cvtColor(image,gray,CV_RGB2GRAY);
-
-        printQrCode(gray);
+		printQrCode(gray, 1);
+		
+		if(procedure == 0){
+			cvtColor(image,gray,CV_RGB2GRAY);
+			printQrCode(gray, 2);
+		}
 		key = waitKey(1);
 
 	}	// End of 'while' loop
