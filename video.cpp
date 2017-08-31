@@ -39,7 +39,50 @@ int procedure = 0;
 
 #ifdef WITH_GROVEPI
 int buzzer_pin = 8;
+int green_led_pin = 2;
+int red_led_pin = 3;
 #endif
+
+
+void makeSound(){
+	#ifdef WITH_GROVEPI
+	digitalWrite(buzzer_pin, HIGH);
+	delay(1000);
+	digitalWrite(buzzer_pin, LOW);
+	#endif
+}
+
+void signalArrived(){
+	#ifdef WITH_GROVEPI
+	digitalWrite(green_led_pin, HIGH);
+	delay(500);
+	digitalWrite(green_led_pin, LOW);
+	delay(500);
+	digitalWrite(green_led_pin, HIGH);
+	delay(500);
+	digitalWrite(green_led_pin, LOW);
+	delay(500);
+	digitalWrite(green_led_pin, HIGH);
+	delay(500);
+	digitalWrite(green_led_pin, LOW);
+	#endif
+}
+
+void signalDelivered(){
+	#ifdef WITH_GROVEPI
+	digitalWrite(red_led_pin, HIGH);
+	delay(500);
+	digitalWrite(red_led_pin, LOW);
+	delay(500);
+	digitalWrite(red_led_pin, HIGH);
+	delay(500);
+	digitalWrite(red_led_pin, LOW);
+	delay(500);
+	digitalWrite(red_led_pin, HIGH);
+	delay(500);
+	digitalWrite(red_led_pin, LOW);
+	#endif
+}
 
 
 void postTransaction(std::string from, std::string to){
@@ -74,6 +117,7 @@ void doArrived(){
 	std::string outStr;
 	Poco::StreamCopier::copyToString(iStr, outStr);
 	std::cout << outStr << std::endl;
+	signalArrived();
 }
 
 void doDelivered(){
@@ -89,6 +133,7 @@ void doDelivered(){
 	std::string outStr;
 	Poco::StreamCopier::copyToString(iStr, outStr);
 	std::cout << outStr << std::endl;
+	signalDelivered();
 }
 
 void postCount(){
@@ -108,11 +153,7 @@ void postCount(){
 
 void parseData(std::string data){
 
-	#ifdef WITH_GROVEPI
-	digitalWrite(buzzer_pin, HIGH);
-	delay(1000);
-	digitalWrite(buzzer_pin, LOW);
-	#endif
+	makeSound();
 	
 	switch(procedure){
 	case 0:{
