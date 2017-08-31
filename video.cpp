@@ -62,6 +62,7 @@ void makeSound(){
 void signalArrived(){
 	#ifdef WITH_GROVEPI
 	lcd.setRGB(0, 0, 255);
+	lcd.setText("Goods received!");
 	digitalWrite(green_led_pin, HIGH);
 	delay(500);
 	digitalWrite(green_led_pin, LOW);
@@ -73,13 +74,15 @@ void signalArrived(){
 	digitalWrite(green_led_pin, HIGH);
 	delay(500);
 	digitalWrite(green_led_pin, LOW);
-	lcd.setRGB(0, 128, 64);
+	lcd.setRGB(255, 255 255);
+	lcd.setText(stdLcdText.c_str());
 	#endif
 }
 
 void signalDelivered(){
 	#ifdef WITH_GROVEPI
 	lcd.setRGB(255, 0, 0);
+	lcd.setText("Goods sent!");
 	digitalWrite(red_led_pin, HIGH);
 	delay(500);
 	digitalWrite(red_led_pin, LOW);
@@ -92,6 +95,7 @@ void signalDelivered(){
 	delay(500);
 	digitalWrite(red_led_pin, LOW);
 	lcd.setRGB(0, 128, 64);
+	lcd.setRGB(255, 255 255);
 	#endif
 }
 
@@ -239,7 +243,7 @@ int main ( int argc, char **argv )
 	pinMode(buzzer_pin, OUTPUT);
 	lcd.connect();
 	lcd.setText(stdLcdText.c_str());
-	lcd.setRGB(0, 128, 64);
+	lcd.setRGB(255, 255 255);
 	#endif
 
 	if(procedure == 1){
