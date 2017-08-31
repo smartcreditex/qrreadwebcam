@@ -253,8 +253,6 @@ int main ( int argc, char **argv )
 		capture >> image;
 		capture >> image;
 		capture >> image;
-		capture >> image;
-		capture >> image;
 		cv::Mat gray;
 
 		cvtColor(image,gray,CV_RGB2GRAY);
