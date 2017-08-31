@@ -47,7 +47,7 @@ int red_led_pin = 3;
 void makeSound(){
 	#ifdef WITH_GROVEPI
 	digitalWrite(buzzer_pin, HIGH);
-	delay(1000);
+	delay(50);
 	digitalWrite(buzzer_pin, LOW);
 	#endif
 }
@@ -251,6 +251,7 @@ int main ( int argc, char **argv )
 	{	
 		
 		capture >> image;
+		capture >> image; // clear delayed image
 		cv::Mat gray;
 
 		cvtColor(image,gray,CV_RGB2GRAY);
