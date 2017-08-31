@@ -229,9 +229,7 @@ int main ( int argc, char **argv )
 	#endif
 
 	VideoCapture capture(cam_id);
-	capture.set(CV_CAP_PROP_BUFFERSIZE, 1);
 
-	//Mat image = imread(argv[1]);
 	Mat image;
 
 	if(!capture.isOpened()) { cerr << " ERR: Unable find input Video source." << endl;
@@ -251,6 +249,11 @@ int main ( int argc, char **argv )
 	while(key != 'q')				// While loop to query for Image Input frame
 	{	
 		
+		capture >> image;
+		capture >> image;
+		capture >> image;
+		capture >> image;
+		capture >> image;
 		capture >> image;
 		cv::Mat gray;
 
