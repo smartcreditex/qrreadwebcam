@@ -228,7 +228,8 @@ int main ( int argc, char **argv )
 	pinMode(buzzer_pin, OUTPUT);
 	#endif
 
-    VideoCapture capture(cam_id);
+	VideoCapture capture(cam_id);
+	capture.set(CV_CAP_PROP_BUFFERSIZE, 1);
 
 	//Mat image = imread(argv[1]);
 	Mat image;
@@ -251,12 +252,6 @@ int main ( int argc, char **argv )
 	{	
 		
 		capture >> image;
-		key = waitKey(50);
-		capture >> image; // clear delayed image
-		key = waitKey(50);
-		capture >> image; // clear delayed image
-		key = waitKey(50);
-		capture >> image; // clear delayed image
 		cv::Mat gray;
 
 		cvtColor(image,gray,CV_RGB2GRAY);
