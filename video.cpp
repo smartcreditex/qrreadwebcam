@@ -251,6 +251,11 @@ int main ( int argc, char **argv )
 	{	
 		
 		capture >> image;
+		key = waitKey(50);
+		capture >> image; // clear delayed image
+		key = waitKey(50);
+		capture >> image; // clear delayed image
+		key = waitKey(50);
 		capture >> image; // clear delayed image
 		cv::Mat gray;
 
