@@ -238,7 +238,7 @@ int main ( int argc, char **argv )
 	initGrovePi(); // initialize communication with the GrovePi
 	pinMode(buzzer_pin, OUTPUT);
 	lcd.connect();
-	lcd.setText(stdLcdText);
+	lcd.setText(stdLcdText.c_str());
 	lcd.setRGB(0, 128, 64);
 	#endif
 
