@@ -1,7 +1,17 @@
 cmake_minimum_required(VERSION 2.8)
 project( qrreadwebcam )
 set (CMAKE_CXX_STANDARD 11)
+option(GROVEPI "compile with grovepi" ON)
+if(GROVEPI)
+	add_definitions(-DWITH_GROVEPI)
+endif(GROVEPI)
 find_package( OpenCV REQUIRED )
 find_package(Poco COMPONENTS Foundation Util Data NetSSL REQUIRED)
 add_executable( qrreadwebcam video.cpp )
-target_link_libraries( qrreadwebcam ${OpenCV_LIBS} ${Poco_LIBRARIES} zbar )
+
+if(GROVEPI)
+	target_link_libraries( qrreadwebcam ${OpenCV_LIBS} ${Poco_LIBRARIES} zbar grovepicpp)
+else(GROVEPI)
+	target_link_libraries( qrreadwebcam ${OpenCV_LIBS} ${Poco_LIBRARIES} zbar )
+endif(GROVEPI)
+

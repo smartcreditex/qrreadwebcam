@@ -20,6 +20,11 @@
 #include <Poco/Net/HTTPSClientSession.h>
 #include <Poco/StreamCopier.h>
 
+#ifdef WITH_GROVEPI
+#include <grovepi.h>
+using namespace GrovePi;
+#endif
+
 using namespace cv;
 using namespace std;
 
@@ -31,6 +36,10 @@ int cam_id = 0;
 * 2 deliver
 */
 int procedure = 0;
+
+#ifdef WITH_GROVEPI
+int buzzer_pin = 8;
+#endif
 
 
 void postTransaction(std::string from, std::string to){
@@ -98,7 +107,12 @@ void postCount(){
 }
 
 void parseData(std::string data){
-	std::cout << data << std::endl;
+
+	#ifdef WITH_GROVEPI
+	digitalWrite(buzzer_pin, HIGH);
+	delay(1000);
+	digitalWrite(buzzer_pin, LOW);
+	#endif
 	
 	switch(procedure){
 	case 0:{
@@ -167,6 +181,11 @@ int main ( int argc, char **argv )
 	cout << "hostname: " << hostname << endl;
 	cout << "cameraid: " << cam_id << endl;
 	cout << "procedure: " << procedure << endl;
+
+	#ifdef WITH_GROVEPI
+	initGrovePi(); // initialize communication with the GrovePi
+	pinMode(buzzer_pin, OUTPUT);
+	#endif
 
     VideoCapture capture(cam_id);
 
