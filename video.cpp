@@ -242,17 +242,34 @@ int main ( int argc, char **argv )
 
 	if(!capture[0].isOpened() && !capture[1].isOpened()) { cerr << " ERR: Unable find input Video source." << endl;
 	    return -1;
-    }
+	}
+	
+	if(procedure == 1){
+		std::thread t1(doCapture,0);
+		std::this_thread::sleep_for(std::chrono::milliseconds(3000));
+		std::thread t2(doScanCode,0);
+		t1.join(); 
+		t2.join(); 
+	} else if(procedure == 1){
+		std::thread t1(doCapture,1);
+		std::this_thread::sleep_for(std::chrono::milliseconds(3000));
+		std::thread t2(doScanCode,1);
+		t1.join(); 
+		t2.join(); 
+	}else{
+		std::thread t1(doCapture,0);
+		std::thread t2(doCapture,1);
+	
+		std::this_thread::sleep_for(std::chrono::milliseconds(3000));
+		std::thread t3(doScanCode,0);
+		std::thread t4(doScanCode,1);
+	
+		t1.join(); 
+		t2.join();
+		t3.join(); 
+		t4.join();
 
-	std::thread t1(doCapture,0);
-	std::thread t2(doCapture,1);
-	std::thread t3(doScanCode,0);
-	std::thread t4(doScanCode,1);
-
-	t1.join(); 
-	t2.join();
-	t3.join(); 
-	t4.join();
+	}
 
 	return 0;
 }
