@@ -169,9 +169,9 @@ void postCount(){
 void parseData(std::string data, int cam){
 
 	makeSound();
-	if(data == "IN"){
+	if(data.compare("IN") == 0){
 		doArrived();
-	}else if(data == "OUT"){
+	}else if(data.compare("OUT") == 0){
 		doDelivered();
 	}else{
 		switch(cam){
@@ -256,8 +256,8 @@ int main ( int argc, char **argv )
 	}else if(procedure == 2){
 		capture[1].open(1);
 	}else{
-		capture[0].open(0);
-		capture[1].open(1);
+		capture[0].open(1);
+		capture[1].open(0);
 	}
 
 	if(!capture[0].isOpened() && !capture[1].isOpened()) { cerr << " ERR: Unable find input Video source." << endl;
