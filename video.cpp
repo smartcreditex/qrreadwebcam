@@ -46,8 +46,8 @@ Mat image[2];
 
 #ifdef WITH_GROVEPI
 int buzzer_pin = 8;
-int green_led_pin = 2;
-int red_led_pin = 3;
+int green_led_pin = 3;
+int red_led_pin = 2;
 #endif
 
 
@@ -61,7 +61,7 @@ void makeSound(){
 
 void signalArrived(){
 	#ifdef WITH_GROVEPI
-	lcd.setRGB(0, 0, 255);
+	lcd.setRGB(255, 0, 0);
 	lcd.setText("Goods Received!");
 	digitalWrite(green_led_pin, HIGH);
 	delay(500);
@@ -81,7 +81,7 @@ void signalArrived(){
 
 void signalDelivered(){
 	#ifdef WITH_GROVEPI
-	lcd.setRGB(255, 0, 0);
+	lcd.setRGB(0, 0, 255);
 	lcd.setText("Goods Issued!");
 	digitalWrite(red_led_pin, HIGH);
 	delay(500);
