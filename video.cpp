@@ -169,18 +169,23 @@ void postCount(){
 void parseData(std::string data, int cam){
 
 	makeSound();
-	
-	switch(cam){
-	case 0:{
+	if(data == "IN"){
 		doArrived();
-	}break;
-	case 1:
+	}else if(data == "OUT"){
 		doDelivered();
-	break;
-	default:
-	break;
-	};
-
+	}else{
+		switch(cam){
+			case 0:{
+				doArrived();
+			}break;
+			case 1:
+				doDelivered();
+			break;
+			default:
+			break;
+		};
+	}
+	
 	std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 }
 			
