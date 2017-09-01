@@ -121,7 +121,7 @@ void postTransaction(std::string from, std::string to){
 
 void doArrived(){
 	std::string url = hostname + "/arrived";
-	
+	try{
 	Poco::URI uri(url);
     Poco::Net::HTTPClientSession session(uri.getHost(), uri.getPort());
     Poco::Net::HTTPRequest req(Poco::Net::HTTPRequest::HTTP_GET,
@@ -132,22 +132,28 @@ void doArrived(){
 	std::string outStr;
 	Poco::StreamCopier::copyToString(iStr, outStr);
 	std::cout << outStr << std::endl;
+	}catch(std::exception &e){
+	
+	}
 	signalArrived();
 }
 
 void doDelivered(){
 	std::string url = hostname + "/delivered";
-	
-	Poco::URI uri(url);
-    Poco::Net::HTTPClientSession session(uri.getHost(), uri.getPort());
-    Poco::Net::HTTPRequest req(Poco::Net::HTTPRequest::HTTP_GET,
-                               uri.getPathAndQuery());
-    session.sendRequest(req);
-    Poco::Net::HTTPResponse res;
-	std::istream &iStr = session.receiveResponse(res);
-	std::string outStr;
-	Poco::StreamCopier::copyToString(iStr, outStr);
-	std::cout << outStr << std::endl;
+	try{
+		Poco::URI uri(url);
+		Poco::Net::HTTPClientSession session(uri.getHost(), uri.getPort());
+		Poco::Net::HTTPRequest req(Poco::Net::HTTPRequest::HTTP_GET,
+								uri.getPathAndQuery());
+		session.sendRequest(req);
+		Poco::Net::HTTPResponse res;
+		std::istream &iStr = session.receiveResponse(res);
+		std::string outStr;
+		Poco::StreamCopier::copyToString(iStr, outStr);
+		std::cout << outStr << std::endl;
+	}catch(std::exception &e){
+
+	}
 	signalDelivered();
 }
 
