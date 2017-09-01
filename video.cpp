@@ -39,7 +39,7 @@ int cam_id = 0;
 */
 int procedure = 0;
 
-std::string stdLcdText = "Smart Credit";
+std::string stdLcdText = "SmartCredit";
 
 VideoCapture capture[2];
 Mat image[2];
@@ -74,7 +74,7 @@ void signalArrived(){
 	digitalWrite(green_led_pin, HIGH);
 	delay(500);
 	digitalWrite(green_led_pin, LOW);
-	lcd.setRGB(0, 0, 0);
+	lcd.setRGB(200, 200, 200);
 	lcd.setText(stdLcdText.c_str());
 	#endif
 }
@@ -82,7 +82,7 @@ void signalArrived(){
 void signalDelivered(){
 	#ifdef WITH_GROVEPI
 	lcd.setRGB(255, 0, 0);
-	lcd.setText("Goods Issue!");
+	lcd.setText("Goods Issued!");
 	digitalWrite(red_led_pin, HIGH);
 	delay(500);
 	digitalWrite(red_led_pin, LOW);
@@ -94,7 +94,7 @@ void signalDelivered(){
 	digitalWrite(red_led_pin, HIGH);
 	delay(500);
 	digitalWrite(red_led_pin, LOW);
-	lcd.setRGB(0, 0, 0);
+	lcd.setRGB(200, 200, 200);
 	lcd.setText(stdLcdText.c_str());
 	#endif
 }
@@ -248,7 +248,7 @@ int main ( int argc, char **argv )
 	pinMode(buzzer_pin, OUTPUT);
 	lcd.connect();
 	lcd.setText(stdLcdText.c_str());
-	lcd.setRGB(0, 0, 0);
+	lcd.setRGB(200, 200, 200);
 	#endif
 
 	if(procedure == 1){
