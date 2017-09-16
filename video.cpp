@@ -81,14 +81,6 @@ void signalArrived(){
 	digitalWrite(green_led_pin, HIGH);
 	delay(500);
 	digitalWrite(green_led_pin, LOW);
-	delay(500);
-	digitalWrite(green_led_pin, HIGH);
-	delay(500);
-	digitalWrite(green_led_pin, LOW);
-	delay(500);
-	digitalWrite(green_led_pin, HIGH);
-	delay(500);
-	digitalWrite(green_led_pin, LOW);
 	#endif
 	#ifdef WITH_GROVEPI
 	lcd.setRGB(200, 200, 200);
@@ -102,14 +94,6 @@ void signalDelivered(){
 	lcd.setText("Goods Issued!");
 	#endif
 	#if defined(WITH_GROVEPI) || defined(WITH_WIRINGPI)
-	digitalWrite(red_led_pin, HIGH);
-	delay(500);
-	digitalWrite(red_led_pin, LOW);
-	delay(500);
-	digitalWrite(red_led_pin, HIGH);
-	delay(500);
-	digitalWrite(red_led_pin, LOW);
-	delay(500);
 	digitalWrite(red_led_pin, HIGH);
 	delay(500);
 	digitalWrite(red_led_pin, LOW);
