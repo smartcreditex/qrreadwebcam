@@ -66,8 +66,8 @@ void makeSound(){
 	#endif
 
 	#if defined(WITH_WIRINGPI)
-	softToneWrite (buzzer_pin, 1200);
-	delay(50);
+	softToneWrite (buzzer_pin, 1000);
+	delay(100);
 	softToneWrite (buzzer_pin, 0);
 	#endif
 }
