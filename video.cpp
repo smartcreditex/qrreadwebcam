@@ -235,9 +235,11 @@ void doCapture(int cam){
 
 void doScanCode(int cam){
 	while(true){
-		cv::Mat gray;
-		cvtColor(image[cam], gray, CV_RGB2GRAY);
-		printQrCode(gray, cam);
+		if(image[cam] && !image[cam].empty()){
+			cv::Mat gray;
+			cvtColor(image[cam], gray, CV_RGB2GRAY);
+			printQrCode(gray, cam);
+		}
 	}
 }
 
