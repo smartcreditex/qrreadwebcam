@@ -1,7 +1,3 @@
-//______________________________________________________________________________________
-// Program : OpenCV based QR code Detection and Retrieval
-// Author  : Bharath Prabhuswamy
-//______________________________________________________________________________________
 
 #include <iostream>
 #include <cmath>
@@ -9,9 +5,9 @@
 #include <chrono>
 #include <thread>
 
-#include <opencv2/core/core.hpp>        // Basic OpenCV structures (cv::Mat, Scalar)
-#include <opencv2/imgproc/imgproc.hpp>  // Gaussian Blur
-#include <opencv2/highgui/highgui.hpp>  // OpenCV window I/O
+#include <opencv2/core/core.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/highgui/highgui.hpp>
 #include <zbar.h>
 #include <Poco/URI.h>
 #include <Poco/Net/DNS.h>
@@ -25,6 +21,10 @@
 #include <grove_rgb_lcd.h>
 using namespace GrovePi;
 LCD lcd;
+#endif
+
+#ifdef WITH_WIRINGPI
+#include <wiringPi.h>
 #endif
 
 using namespace cv;
@@ -50,9 +50,15 @@ int green_led_pin = 3;
 int red_led_pin = 2;
 #endif
 
+#ifdef WITH_WIRINGPI
+int buzzer_pin = 17;
+int green_led_pin = 3;
+int red_led_pin = 2;
+#endif
+
 
 void makeSound(){
-	#ifdef WITH_GROVEPI
+	#if defined(WITH_GROVEPI) || defined(WITH_WIRINGPI)
 	digitalWrite(buzzer_pin, HIGH);
 	delay(50);
 	digitalWrite(buzzer_pin, LOW);
@@ -63,6 +69,8 @@ void signalArrived(){
 	#ifdef WITH_GROVEPI
 	lcd.setRGB(255, 0, 0);
 	lcd.setText("Goods Received!");
+	#endif
+	#if defined(WITH_GROVEPI) || defined(WITH_WIRINGPI)
 	digitalWrite(green_led_pin, HIGH);
 	delay(500);
 	digitalWrite(green_led_pin, LOW);
@@ -74,6 +82,8 @@ void signalArrived(){
 	digitalWrite(green_led_pin, HIGH);
 	delay(500);
 	digitalWrite(green_led_pin, LOW);
+	#endif
+	#ifdef WITH_GROVEPI
 	lcd.setRGB(200, 200, 200);
 	lcd.setText(stdLcdText.c_str());
 	#endif
@@ -83,6 +93,8 @@ void signalDelivered(){
 	#ifdef WITH_GROVEPI
 	lcd.setRGB(0, 0, 255);
 	lcd.setText("Goods Issued!");
+	#endif
+	#if defined(WITH_GROVEPI) || defined(WITH_WIRINGPI)
 	digitalWrite(red_led_pin, HIGH);
 	delay(500);
 	digitalWrite(red_led_pin, LOW);
@@ -94,6 +106,8 @@ void signalDelivered(){
 	digitalWrite(red_led_pin, HIGH);
 	delay(500);
 	digitalWrite(red_led_pin, LOW);
+	#endif
+	#ifdef WITH_GROVEPI
 	lcd.setRGB(200, 200, 200);
 	lcd.setText(stdLcdText.c_str());
 	#endif
@@ -255,6 +269,13 @@ int main ( int argc, char **argv )
 	lcd.connect();
 	lcd.setText(stdLcdText.c_str());
 	lcd.setRGB(200, 200, 200);
+	#endif
+
+	#ifdef WITH_WIRINGPI
+	wiringPiSetup();
+	pinMode(buzzer_pin, OUTPUT);
+	pinMode(green_led_pin, OUTPUT);
+	pinMode(red_led_pin, OUTPUT);
 	#endif
 
 	if(procedure == 1){
