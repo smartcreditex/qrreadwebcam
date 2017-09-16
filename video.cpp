@@ -25,6 +25,7 @@ LCD lcd;
 
 #ifdef WITH_WIRINGPI
 #include <wiringPi.h>
+#include <softTone.h>
 #endif
 
 using namespace cv;
@@ -58,10 +59,16 @@ int red_led_pin = 8;
 
 
 void makeSound(){
-	#if defined(WITH_GROVEPI) || defined(WITH_WIRINGPI)
+	#if defined(WITH_GROVEPI)
 	digitalWrite(buzzer_pin, HIGH);
 	delay(50);
 	digitalWrite(buzzer_pin, LOW);
+	#endif
+
+	#if defined(WITH_WIRINGPI)
+	softToneWrite (buzzer_pin, 1200);
+	delay(50);
+	softToneWrite (buzzer_pin, 0);
 	#endif
 }
 
@@ -277,7 +284,7 @@ int main ( int argc, char **argv )
 	#ifdef WITH_WIRINGPI
 	cout << "WITH_WIRINGPI" << endl;
 	wiringPiSetup();
-	pinMode(buzzer_pin, OUTPUT);
+	softToneCreate (buzzer_pin);
 	pinMode(green_led_pin, OUTPUT);
 	pinMode(red_led_pin, OUTPUT);
 	#endif
