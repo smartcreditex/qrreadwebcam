@@ -15,10 +15,10 @@ find_package(Poco COMPONENTS Foundation Util Data NetSSL REQUIRED)
 add_executable( qrreadwebcam video.cpp )
 
 if(GROVEPI)
-	target_link_libraries( qrreadwebcam ${OpenCV_LIBS} ${Poco_LIBRARIES} zbar grovepicpp)
+	target_link_libraries( qrreadwebcam pthread ${OpenCV_LIBS} ${Poco_LIBRARIES} zbar grovepicpp)
 elseif(WIRINGPI)
-	target_link_libraries( qrreadwebcam ${OpenCV_LIBS} ${Poco_LIBRARIES} zbar wiringpi)
+	target_link_libraries( qrreadwebcam pthread ${OpenCV_LIBS} ${Poco_LIBRARIES} zbar wiringpi)
 else()
-	target_link_libraries( qrreadwebcam ${OpenCV_LIBS} ${Poco_LIBRARIES} zbar )
+	target_link_libraries( qrreadwebcam pthread ${OpenCV_LIBS} ${Poco_LIBRARIES} zbar )
 endif()
 
