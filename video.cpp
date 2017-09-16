@@ -296,6 +296,8 @@ int main ( int argc, char **argv )
 	}
 
 	makeSound();
+	signalArrived();
+	signalDelivered();
 	
 	if(procedure == 1){
 		std::thread t1(doCapture,0);
