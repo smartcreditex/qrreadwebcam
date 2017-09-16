@@ -37,7 +37,7 @@ int cam_id = 0;
 * 1 arrive
 * 2 deliver
 */
-int procedure = 0;
+int procedure = 1;
 
 std::string stdLcdText = "SmartCredit";
 
@@ -297,7 +297,7 @@ int main ( int argc, char **argv )
 		std::thread t2(doScanCode,0);
 		t1.join(); 
 		t2.join(); 
-	} else if(procedure == 1){
+	} else if(procedure == 2){
 		std::thread t1(doCapture,1);
 		std::this_thread::sleep_for(std::chrono::milliseconds(3000));
 		std::thread t2(doScanCode,1);
