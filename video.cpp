@@ -266,6 +266,7 @@ int main ( int argc, char **argv )
 	cout << "procedure: " << procedure << endl;
 
 	#ifdef WITH_GROVEPI
+	cout << "WITH_GROVEPI" << endl;
 	initGrovePi(); // initialize communication with the GrovePi
 	pinMode(buzzer_pin, OUTPUT);
 	lcd.connect();
@@ -274,6 +275,7 @@ int main ( int argc, char **argv )
 	#endif
 
 	#ifdef WITH_WIRINGPI
+	cout << "WITH_WIRINGPI" << endl;
 	wiringPiSetup();
 	pinMode(buzzer_pin, OUTPUT);
 	pinMode(green_led_pin, OUTPUT);
@@ -292,6 +294,8 @@ int main ( int argc, char **argv )
 	if(!capture[0].isOpened() && !capture[1].isOpened()) { cerr << " ERR: Unable find input Video source." << endl;
 	    return -1;
 	}
+
+	makeSound();
 	
 	if(procedure == 1){
 		std::thread t1(doCapture,0);
