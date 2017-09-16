@@ -51,9 +51,9 @@ int red_led_pin = 2;
 #endif
 
 #ifdef WITH_WIRINGPI
-int buzzer_pin = 17;
-int green_led_pin = 3;
-int red_led_pin = 2;
+int buzzer_pin = 0;
+int green_led_pin = 9;
+int red_led_pin = 8;
 #endif
 
 
